@@ -1,19 +1,24 @@
 <template>
-  <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+  <div>
+    <div>asasa</div>
+    <div>saasd</div>
+    <div>{{ getAllPost }}</div>
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
-
+import { mapActions, mapGetters } from "vuex";
 export default {
-  name: 'App',
-  components: {
-    HelloWorld
-  }
-}
+  computed: {
+    ...mapGetters(["getAllPost"]),
+  },
+  methods: {
+    ...mapActions(["getPostsFromDB", "addNewPost", "updatePost", "deletePost"]),
+  },
+  created() {
+    this.getPostsFromDB();
+  },
+};
 </script>
 
 <style>
