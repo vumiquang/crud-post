@@ -1,19 +1,28 @@
 <template>
-  <div>
-    <div>asasa</div>
-    <div>saasd</div>
-    <div>{{ getAllPost }}</div>
+  <div class="container pt-5">
+    <div class="w-100">
+      <InputPost />
+      <TablePost :header="getAllPost" />
+    </div>
   </div>
 </template>
 
 <script>
 import { mapActions, mapGetters } from "vuex";
+
+import InputPost from "./components/InputPost";
+import TablePost from "./components/TablePost";
+
 export default {
+  components: {
+    InputPost,
+    TablePost,
+  },
   computed: {
     ...mapGetters(["getAllPost"]),
   },
   methods: {
-    ...mapActions(["getPostsFromDB", "addNewPost", "updatePost", "deletePost"]),
+    ...mapActions("posts", ["getPostsFromDB"]),
   },
   created() {
     this.getPostsFromDB();

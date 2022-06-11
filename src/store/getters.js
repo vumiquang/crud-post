@@ -1,8 +1,15 @@
 const getters = {
-  getAllPost: (state) => {
-    console.log("__", state);
-    return state.posts;
+  getAllPost: (state) => state.posts.posts,
+  getPostById: (state) => (id) => state.posts.posts.find((p) => p.id === id),
+  isEdit: (state) => state.input.isEdit,
+  getControlInput: (state) => state.input.controlInput,
+  getDataSelect: (state) => state.input.dataSelected,
+  getShouldDeletePost: (state) => state.posts.shouldDeletePost,
+  isControlInputValid: (state) => {
+    if (state.input.controlInput.error.title !== "") return false;
+    if (state.input.controlInput.error.body !== "") return false;
+    return true;
   },
-  getPostById: (state) => (id) => state.posts.find((p) => p.id === id),
 };
+
 export default getters;
