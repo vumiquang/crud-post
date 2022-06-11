@@ -2,6 +2,7 @@ import { addPost, deletePost, fetchAllPost, updatePost } from "@/api/posts";
 
 const state = {
   posts: [],
+  shouldDeletePost: false,
 };
 
 const mutations = {
@@ -12,43 +13,57 @@ const mutations = {
     state.posts.push(post);
   },
   UPDATE_POST: (state, post) => {
-    state.posts.forEach((p) => {
-      if (p.id === post.id) p = post;
+    state.posts = state.posts.map((p) => {
+      if (p.id === post.id) {
+        return post;
+      } else {
+        return p;
+      }
     });
   },
   DELETE_POST: (state, id) => {
     state.posts = state.posts.filter((p) => p.id !== id);
   },
+  SHOULD_DELETE_POST: (state, status) => {
+    state.shouldDeletePost = status;
+  },
 };
 
 const actions = {
   getPostsFromDB({ commit }) {
-    fetchAllPost().then((response) =>
-      commit("SET_POSTS", response.data.slice(0, 10))
-    );
+    fetchAllPost().then((response) => {
+      commit("SET_POSTS", response.data.slice(0, 10));
+    });
   },
 
   addNewPost({ commit }, data) {
-    addPost(data).then((response) => {
+    return addPost(data).then((response) => {
       commit("ADD_NEW_POST", { ...response.data, id: data.id });
     });
   },
 
   updatePost({ commit }, data) {
-    updatePost(data).then((response) => {
-      commit("UPDATE_POST", { ...response.data, id: data.id });
+    return updatePost({ ...data, id: 1 }).then((response) => {
+      console.log(response);
+      commit("UPDATE_POST", data);
     });
   },
 
   deletePost({ commit }, id) {
-    deletePost(id).then((response) => {
-      console.log(response.json());
-      commit("DELETE_POST", id);
+    return deletePost(id).then((response) => {
+      if (response.status == 200) {
+        commit("DELETE_POST", id);
+      } else alert("Somethings went wrong!");
     });
+  },
+
+  shouldDeletePost({ commit }, status) {
+    commit("SHOULD_DELETE_POST", status);
   },
 };
 
 export default {
+  namespaced: true,
   state,
   mutations,
   actions,
