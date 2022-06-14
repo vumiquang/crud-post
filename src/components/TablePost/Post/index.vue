@@ -33,7 +33,7 @@ export default {
       this.$store.dispatch("input/setDataSelect", this.data);
       this.$store.dispatch("input/setControlInput", this.data);
       this.$store.dispatch("input/setIsEdit", true);
-      window.scrollTo(0, 0);
+      this.$emit("editPost");
     },
     deletePost() {
       this.$store.dispatch("input/setDataSelect", this.data);

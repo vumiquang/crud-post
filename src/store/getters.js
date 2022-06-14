@@ -10,6 +10,11 @@ const getters = {
     if (state.input.controlInput.error.body !== "") return false;
     return true;
   },
+  isDataSelectInputValid: (state) => {
+    if (state.input.dataSelected.error.title !== "") return false;
+    if (state.input.dataSelected.error.body !== "") return false;
+    return true;
+  },
 };
 
 export default getters;

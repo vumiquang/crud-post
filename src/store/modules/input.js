@@ -1,18 +1,38 @@
-const state = {
-  isEdit: false,
-  dataSelected: null,
-  controlInput: {
+const dataModel = {
+  title: "",
+  body: "",
+  error: {
     title: "",
     body: "",
-    error: {
-      title: "",
-      body: "",
+  },
+  validate: {
+    title: {
+      required: {
+        status: true,
+        msg: "This field is required !",
+      },
     },
-    validate: function (name) {
-      if (this[name] === "") this.error[name] = "This field is required!";
-      else this.error[name] = "";
+    body: {
+      required: {
+        status: true,
+        msg: "This field is required !",
+      },
     },
   },
+};
+
+const validateFunction = (fieldValidate, input) => {
+  let msg = "";
+  if (fieldValidate.required !== undefined && fieldValidate.required.status) {
+    msg = input === "" ? fieldValidate.required.msg : "";
+  }
+  return msg;
+};
+
+const state = {
+  isEdit: false,
+  dataSelected: JSON.parse(JSON.stringify(dataModel)),
+  controlInput: JSON.parse(JSON.stringify(dataModel)),
 };
 
 const mutations = {
@@ -20,18 +40,33 @@ const mutations = {
     state.isEdit = status;
   },
   SET_DATA_SELECT: (state, data) => {
-    state.dataSelected = data;
+    const { id, title, body } = data;
+    state.dataSelected = {
+      ...JSON.parse(JSON.stringify(dataModel)),
+      id,
+      body,
+      title,
+    };
   },
   SET_CONTROL_INPUT: (state, { title, body }) => {
-    if (typeof title !== "undefined") state.controlInput.title = title;
-    if (typeof body !== "undefined") state.controlInput.body = body;
+    if (typeof title !== "undefined") state.dataSelected.title = title;
+    if (typeof body !== "undefined") state.dataSelected.body = body;
   },
   VALIDATE_INPUT: (state, name) => {
-    state.controlInput.validate(name);
+    state.controlInput.error[name] = validateFunction(state.controlInput.validate[name],state.controlInput[name]);
+  },
+  VALIDATE_DATA_SELECT: (state, name) => {
+    state.dataSelected.error[name] = validateFunction(state.dataSelected.validate[name],state.dataSelected[name]);
   },
   SET_ERROR_EMPTY: (state) => {
     state.controlInput.error.title = "";
     state.controlInput.error.body = "";
+  },
+  RESET_INPUT: (state) => {
+    state.controlInput = JSON.parse(JSON.stringify(dataModel));
+  },
+  RESET_DATA_SELECT: (state) => {
+    state.dataSelected = JSON.parse(JSON.stringify(dataModel));
   },
 };
 
@@ -48,8 +83,17 @@ const actions = {
   validateInput({ commit }, name) {
     commit("VALIDATE_INPUT", name);
   },
+  validateDataSelect({ commit }, name) {
+    commit("VALIDATE_DATA_SELECT", name);
+  },
   setErrorEmpty({ commit }) {
     commit("SET_ERROR_EMPTY");
+  },
+  resetInput({ commit }) {
+    commit("RESET_INPUT");
+  },
+  resetDataSelect({ commit }) {
+    commit("RESET_DATA_SELECT");
   },
 };
 export default {
