@@ -19,7 +19,7 @@ function updatePost(data) {
   const url = "/posts/" + data.id;
   return api.put(url, data);
 }
-
+// eslint-disable-next-line
 function deletePost(id) {
   const url = "/posts/" + id;
   return api.delete(url);

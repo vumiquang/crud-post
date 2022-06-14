@@ -12,7 +12,6 @@ import { mapActions, mapGetters } from "vuex";
 
 import InputPost from "./components/InputPost";
 import TablePost from "./components/TablePost";
-
 export default {
   components: {
     InputPost,

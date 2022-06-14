@@ -2,7 +2,6 @@ import { addPost, deletePost, fetchAllPost, updatePost } from "@/api/posts";
 
 const state = {
   posts: [],
-  shouldDeletePost: false,
 };
 
 const mutations = {
@@ -24,15 +23,12 @@ const mutations = {
   DELETE_POST: (state, id) => {
     state.posts = state.posts.filter((p) => p.id !== id);
   },
-  SHOULD_DELETE_POST: (state, status) => {
-    state.shouldDeletePost = status;
-  },
 };
 
 const actions = {
   getPostsFromDB({ commit }) {
     fetchAllPost().then((response) => {
-      commit("SET_POSTS", response.data.slice(0, 10));
+      commit("SET_POSTS", response.data.slice(0, 4));
     });
   },
 
@@ -43,8 +39,7 @@ const actions = {
   },
 
   updatePost({ commit }, data) {
-    return updatePost({ ...data, id: 1 }).then((response) => {
-      console.log(response);
+    return updatePost({ ...data, id: 1 }).then(() => {
       commit("UPDATE_POST", data);
     });
   },
@@ -55,10 +50,6 @@ const actions = {
         commit("DELETE_POST", id);
       } else alert("Somethings went wrong!");
     });
-  },
-
-  shouldDeletePost({ commit }, status) {
-    commit("SHOULD_DELETE_POST", status);
   },
 };
 
