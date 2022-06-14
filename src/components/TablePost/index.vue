@@ -1,46 +1,18 @@
 <template lang="">
   <div>
-    <!-- modal delete -->
-    <div
-      class="modal"
-      style="display: block; background-color: rgba(0, 0, 0, 0.5)"
-      v-if="getShouldDeletePost"
-      @click="closeModal($event)"
+    <!-- Modal -->
+    <Modal
+      title="Do you delete this post ?"
+      :button="{ color: 'btn-danger', text: 'Delete' }"
+      @close="closeModal"
+      @main-event="deletePost"
+      v-show="isShowModal"
     >
-      <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
-        <div class="modal-content" ref="modal">
-          <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">
-              Do you delete this post ?
-            </h5>
-            <button
-              type="button"
-              class="btn-close"
-              data-bs-dismiss="modal"
-              aria-label="Close"
-              @click="shouldDeletePost(false)"
-            ></button>
-          </div>
-          <div class="modal-body">
-            <div class="fw-bold fs-4">{{ getDataSelect.title }}</div>
-            <div>{{ getDataSelect.body }}</div>
-          </div>
-          <div class="modal-footer">
-            <button
-              type="button"
-              class="btn btn-secondary"
-              data-bs-dismiss="modal"
-              @click="shouldDeletePost(false)"
-            >
-              Close
-            </button>
-            <button type="button" class="btn btn-danger" @click="deletePost">
-              Delete
-            </button>
-          </div>
-        </div>
+      <div class="fw-bold fs-4">
+        {{ getDataSelect !== null ? getDataSelect.title : "" }}
       </div>
-    </div>
+      <div>{{ getDataSelect !== null ? getDataSelect.body : "" }}</div>
+    </Modal>
     <!-- Table post -->
     <table class="table table-striped table-hover table-dark">
       <thead>
@@ -52,34 +24,51 @@
         </tr>
       </thead>
       <tbody>
-        <Post v-for="(data, index) in header" :key="index" :data="data" />
+        <Post
+          v-for="(data, index) in header"
+          :key="index"
+          :data="data"
+          @deletePost="openModal"
+        />
       </tbody>
     </table>
   </div>
 </template>
 
 <script>
+import Modal from "../Modal";
 import Post from "./Post";
 import { mapGetters, mapActions } from "vuex";
 
 export default {
+  data() {
+    return {
+      isShowModal: false,
+    };
+  },
   props: {
     header: {
       type: Array,
       default: () => [],
     },
   },
+  components: {
+    Post,
+    Modal,
+  },
   computed: {
     ...mapGetters(["getShouldDeletePost", "getDataSelect"]),
   },
   methods: {
     ...mapActions("posts", ["shouldDeletePost"]),
-    closeModal(event) {
-      if (event.target.contains(this.$refs.modal)) {
-        this.shouldDeletePost(false);
-      }
+    closeModal() {
+      this.isShowModal = false;
+    },
+    openModal() {
+      this.isShowModal = true;
     },
     deletePost() {
+      this.closeModal();
       const { id } = this.$store.getters.getDataSelect;
       this.$store.dispatch("posts/shouldDeletePost", false);
       this.$store
@@ -117,9 +106,6 @@ export default {
           });
         });
     },
-  },
-  components: {
-    Post,
   },
 };
 </script>

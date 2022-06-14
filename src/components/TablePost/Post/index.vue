@@ -37,7 +37,7 @@ export default {
     },
     deletePost() {
       this.$store.dispatch("input/setDataSelect", this.data);
-      this.$store.dispatch("posts/shouldDeletePost", true);
+      this.$emit("deletePost");
     },
   },
 };

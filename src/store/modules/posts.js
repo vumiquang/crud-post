@@ -32,7 +32,7 @@ const mutations = {
 const actions = {
   getPostsFromDB({ commit }) {
     fetchAllPost().then((response) => {
-      commit("SET_POSTS", response.data.slice(0, 10));
+      commit("SET_POSTS", response.data.slice(0, 4));
     });
   },
 
